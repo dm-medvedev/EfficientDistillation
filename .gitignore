@@ -1,0 +1,17 @@
+**.pyc
+__**
+venv/**
+**log/
+data/**
+**.ipynb
+**.pt
+**.png
+**.pdf
+**.jpg
+**/logs/**
+**.json
+**.bin
+**.zip
+**/data
+**/to_delete/**
+**.csv
