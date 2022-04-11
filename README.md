@@ -1,4 +1,4 @@
-# Efficient Dataset Distillation using GTN, FM, IFT.
+# Efficient Dataset Distillation using GTN, GM, IFT.
 
 This project contains code of experiments for "Learning to Generate Synthetic Training Data using
 Gradient Matching and Implicit Differentiation" paper, preprint text can be found [here](https://arxiv.org/abs/2203.08559). The paper was published in [AIST 2021](https://aistconf.org/) conference.
