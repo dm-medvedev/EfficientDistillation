@@ -41,7 +41,7 @@ def parse_args():
     return args
 
 
-def eval_step(testloader, loop_config, teacher, device, n_epochs=1000):
+def eval_step(testloader, loop_config, teacher, device, n_epochs=1000, cached=False):
     st = time.time()
     learner = get_network(loop_config.learner_c.arch, 
                           **asdict(loop_config.data_c))
@@ -49,7 +49,7 @@ def eval_step(testloader, loop_config, teacher, device, n_epochs=1000):
     if loop_config.learned_curiculum:
         trainloader = TeacherMapDataset(teacher)
     else:
-        trainloader = TeacherIterDataset(teacher)
+        trainloader = TeacherIterDataset(teacher, cached)
     param_augment = loop_config.eval_c.aug_c
     res = evaluate_net(learner, trainloader, testloader, 
                        loop_config.eval_c.lr, param_augment, 
