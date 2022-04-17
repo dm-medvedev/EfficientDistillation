@@ -48,11 +48,17 @@ def prepare_data(teacher, step=None, class_nm=None):
 
 
 class TeacherIterDataset(IterableDataset):
-    def __init__(self, teacher):
+    def __init__(self, teacher, cached=False):
         self.teacher = teacher
-    
+        self.cached = cached
+        if self.cached:
+            self.data, self.target = prepare_data(self.teacher)
+
     def __iter__(self):
-        data, target = prepare_data(self.teacher)
+        if self.cached:
+            data, target = self.data, self.target
+        else:
+            data, target = prepare_data(self.teacher)
         yield data.cpu(), target.cpu()
 
 
