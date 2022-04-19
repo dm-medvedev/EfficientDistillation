@@ -101,10 +101,12 @@ def evaluate_synset(net, images_train, labels_train, testloader,
 
 
 def evaluate_net(net, trainloader, testloader, lr, 
-                 param_augment, device, Epoch=1000):
+                 param_augment, device, Epoch=1000, schedule=True,
+                 epoch_to_eval=None):
+    results = []
     net = net.to(device)
     lr = float(lr)
-    lr_schedule = [Epoch//2+1]
+    lr_schedule = [Epoch//2+1] if schedule else []
     optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9,
                                 weight_decay=0.0005)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -115,9 +117,12 @@ def evaluate_net(net, trainloader, testloader, lr,
         if ep in lr_schedule: # как плохо
             lr *= 0.1
             optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+        if ep in epoch_to_eval:
+          loss_test, acc_test = epoch('test', testloader, net, optimizer, criterion, param_augment, device)
+          results.append((acc_train, acc_test, loss_train))
     time_train = time.time() - start
     loss_test, acc_test = epoch('test', testloader, net, optimizer, criterion, param_augment, device)
-    return net, acc_train, acc_test, loss_train
+    return net, (acc_train, acc_test, loss_train) if len(results) == 0 else results
 
 
 def batches4classes(loader, batch_size, num_classes, real_steps=1):
