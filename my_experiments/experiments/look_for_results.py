@@ -54,7 +54,8 @@ def eval_step(testloader, loop_config, teacher, device, n_epochs=1000,
     param_augment = loop_config.eval_c.aug_c
     res = evaluate_net(learner, trainloader, testloader, 
                        loop_config.eval_c.lr, param_augment, 
-                       device, Epoch=n_epochs, schedule, epoch_to_eval)
+                       device, Epoch=n_epochs, schedule=schedule, 
+                       epoch_to_eval = epoch_to_eval)
     _, res = res
     duration = time.time() - st
     return (*res, duration) if isinstance(res, tuple) else (res, duration)
