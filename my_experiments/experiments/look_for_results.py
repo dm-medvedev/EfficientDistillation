@@ -41,7 +41,8 @@ def parse_args():
     return args
 
 
-def eval_step(testloader, loop_config, teacher, device, n_epochs=1000, cached=False):
+def eval_step(testloader, loop_config, teacher, device, n_epochs=1000, 
+              cached=False, schedule=True, epoch_to_eval=None):
     st = time.time()
     learner = get_network(loop_config.learner_c.arch, 
                           **asdict(loop_config.data_c))
@@ -53,9 +54,10 @@ def eval_step(testloader, loop_config, teacher, device, n_epochs=1000, cached=Fa
     param_augment = loop_config.eval_c.aug_c
     res = evaluate_net(learner, trainloader, testloader, 
                        loop_config.eval_c.lr, param_augment, 
-                       device, Epoch=n_epochs)
-    _, acc_train, acc_test, loss_train = res
-    return acc_train, acc_test, loss_train, time.time() - st
+                       device, Epoch=n_epochs, schedule, epoch_to_eval)
+    _, res = res
+    duration = time.time() - st
+    return (*res, duration) if isinstance(res, tuple) else (res, duration)
 
 
 def load_config_and_model(dir_, is_dd:bool, do_aug:bool):
